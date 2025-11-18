@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: planta-backend
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn planta.wsgi:application
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: planta.settings
+      - key: DATABASE_URL
+        fromDatabase:
+          name: planta-db
+          property: connectionString
+
+databases:
+  - name: planta-db
+    databaseName: planta_db
+    user: planta_user
