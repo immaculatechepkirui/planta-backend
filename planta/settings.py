@@ -25,7 +25,12 @@ SECRET_KEY = "django-insecure-(sz%@)@**k=e5!$h7u&)w=-%6fa$z8%fj^)avtd+my-pul3z=d
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+    'localhost',
+    'planta-backend-rt0u.onrender.com',
+    '.onrender.com', 
+]
 
 
 # Application definition
