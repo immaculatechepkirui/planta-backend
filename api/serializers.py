@@ -1,10 +1,8 @@
-# api/serializers.py
 from rest_framework import serializers
 from plantaai.models import PredictionHistory
-
-# api/serializers.py (FULL CONTENT)
 from rest_framework import serializers
-# from plantaai.models import PredictionHistory # Not used in the serializer right now
+from django.contrib.auth.models import User
+
 
 class PredictionInputSerializer(serializers.Serializer):
     Hectares = serializers.FloatField()
@@ -43,18 +41,45 @@ class PredictionInputSerializer(serializers.Serializer):
     Relative_Humidity_D61_D90 = serializers.FloatField()
     Relative_Humidity_D91_D120 = serializers.FloatField()
     Trash_in_bundles = serializers.FloatField()
-    
-    # --- Encoded Categorical Features ---
-    # These must match exactly what your get_dummies() created
     Agriblock_encoded = serializers.FloatField()
     Variety_encoded = serializers.FloatField()
     Soil_Type_encoded = serializers.FloatField()
     Wind_Direction_D1_D30_encoded = serializers.FloatField()
-
-# We can reuse the PredictionHistory model serializer if needed later, but the input one is key for the API
 
     
 class PredictionResultSerializer(serializers.ModelSerializer):
     class Meta:
         model = PredictionHistory
         fields = '__all__'
+
+
+class UserRegistrationSerializer(serializers.ModelSerializer):
+    password2 = serializers.CharField(style={'input_type': 'password'}, write_only=True)
+
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'first_name', 'password', 'password2']
+        extra_kwargs = {
+            'password': {'write_only': True}
+        }
+
+    def save(self):
+        user = User(
+            email=self.validated_data['email'],
+            username=self.validated_data['username'],
+            first_name=self.validated_data['first_name']
+        )
+        password = self.validated_data['password']
+        password2 = self.validated_data['password2']
+
+        if password != password2:
+            raise serializers.ValidationError({'password': 'Passwords must match.'})
+        user.set_password(password)
+        user.save()
+        return user
+
+
+class PredictionHistorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PredictionHistory
+        fields = ['id', 'prediction_date', 'predicted_yield_kg', 'recommended_variety'] 
