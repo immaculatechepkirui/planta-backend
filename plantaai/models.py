@@ -7,9 +7,6 @@ User = get_user_model()
 class PredictionHistory(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='predictions', null=True, blank=True)
     prediction_date = models.DateTimeField(auto_now_add=True)
-    
-    # --- Input Features (Mirroring your CSV columns/Encoded features) ---
-    # The names must match the columns in your one-hot encoded DataFrame (X)
     Hectares = models.FloatField()
     Seedrate_in_Kg = models.FloatField()
     LP_Mainfield_in_Tonnes = models.FloatField()
@@ -46,19 +43,10 @@ class PredictionHistory(models.Model):
     Relative_Humidity_D61_D90 = models.FloatField()
     Relative_Humidity_D91_D120 = models.FloatField()
     Trash_in_bundles = models.FloatField()
-    
-    # --- Encoded Categorical Features (placeholders for the one-hot encoded columns) ---
-    # These represent the *presence* of a specific category combination
-    # The exact field names will depend on how pandas get_dummies named them. 
-    # E.g., 'Variety_Variety B' becomes 'Variety_Variety_B' here
-    # You might need to adjust these names based on your final feature list joblib file!
-    # These are illustrative examples:
     Agriblock_encoded = models.FloatField(default=0.0)
     Variety_encoded = models.FloatField(default=0.0)
     Soil_Type_encoded = models.FloatField(default=0.0)
-    Wind_Direction_D1_D30_encoded = models.FloatField(default=0.0)
-    
-    # --- Output/Result ---
+    Wind_Direction_D1_D30_encoded = models.FloatField(default=0.0)    
     predicted_yield_kg = models.FloatField(null=True, blank=True)
     recommended_variety = models.CharField(max_length=100, null=True, blank=True)
 
