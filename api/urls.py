@@ -1,7 +1,6 @@
 from django.urls import path, include 
 from .views import ConversationListView 
-from .views import PredictYieldView, SignupView, LoginView, LogoutView 
-
+from .views import ConversationListView, PredictYieldView, SignupView, LoginView, LogoutView, UserMeView
 urlpatterns = [
     path('predict/', PredictYieldView.as_view(), name='predict-yield'),
     path('auth/me/', UserMeView.as_view(), name='user-me'),
