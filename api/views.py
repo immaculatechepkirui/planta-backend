@@ -8,7 +8,7 @@ from rest_framework.authtoken.models import Token
 from .serializers import PredictionInputSerializer, UserRegistrationSerializer, PredictionHistorySerializer
 from plantaai.models import PredictionHistory 
 from rest_framework.permissions import IsAuthenticated
-from .models import UserProfile
+from users.models import UserProfile
 from django.contrib.auth.models import User
 
 class PredictYieldView(APIView):
