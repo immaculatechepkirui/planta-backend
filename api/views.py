@@ -7,6 +7,9 @@ from django.contrib.auth import authenticate, login, logout
 from rest_framework.authtoken.models import Token
 from .serializers import PredictionInputSerializer, UserRegistrationSerializer, PredictionHistorySerializer
 from plantaai.models import PredictionHistory 
+from rest_framework.permissions import IsAuthenticated
+from .models import UserProfile
+from django.contrib.auth.models import User
 
 class PredictYieldView(APIView):
     permission_classes = [permissions.IsAuthenticated] 
@@ -77,3 +80,18 @@ class ConversationListView(generics.ListAPIView):
 
     def get_queryset(self):
         return PredictionHistory.objects.filter(user=self.request.user).order_by('-prediction_date')
+
+class UserMeView(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request):
+        profile = UserProfile.objects.filter(user=request.user).first()
+        data = {
+            "username": request.user.username,
+            "email": request.user.email,
+            "first_name": request.user.first_name,
+            "profile": {
+                "farm_location": profile.farm_location if profile else None,
+                "farm_size_hectares": profile.farm_size_hectares if profile else None
+            }
+        }
+        return Response(data)
